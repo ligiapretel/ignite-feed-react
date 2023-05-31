@@ -1,28 +1,50 @@
+import { format, formatDistanceToNow } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+import { Avatar } from './Avatar';
 import { Comment } from './Comment';
 import styles from './Post.module.css';
 
-export function Post(){
+export function Post({author, content, publishedAt}){
+
+    const publishedDateFormatted = format(publishedAt, "d 'de' LLLL 'às' HH'h'mm", {
+        locale: ptBR,
+    })
+
+    const publishedRelativeDate = formatDistanceToNow(publishedAt, {
+        locale: ptBR,
+        addSuffix: true,
+    })
+
+
     return (
         <article className={styles.post}>
             <header>
                 <div className={styles.author}>
-                    <img className={styles.avatar} src="https://github.com/ligiapretel.png" alt="Imagem de perfil do autor da publicação" />
+                    <Avatar src={author.avatarUrl}/>
                     <div className={styles.authorInfo}>
-                        <strong>Ligia Pretel Eimantas</strong>
-                        <span>Web Developer</span>
+                        <strong>{author.name}</strong>
+                        <span>{author.role}</span>
                     </div>
                 </div>
-                <time title='29 de Maio às 10h13' dateTime='2023-05-29 10:13:20'>Publicado há 1h</time>
+                <time title={publishedDateFormatted} dateTime={publishedAt.toISOString()}>{publishedRelativeDate}</time>
             </header>
 
             <div className={styles.content}>
-                <p>Fala pessoal, blz?</p>
-                <p>Bora codar mais um pouquinho hoje? É dia de aprender mais sobre React.</p>
-                <p>Se liguem: <a href="">react/projetotop</a></p>
-                <p>
-                    <a href="" className={styles.tag}>#reactjs</a>
-                    <a href="" className={styles.tag}>#boracodar</a>
-                </p>
+                {content.map(item=>{
+                    if(item.type === 'paragraph'){
+                        return <p>{item.content}</p>
+                    }else if(item.type === 'link'){
+                        return <p><a href="">{item.content}</a></p>
+                    }else if(item.type === 'tag'){
+                        return (
+                            <p>
+                                {item.content.map(tag=>{
+                                    return <a href="" className={styles.tag}>{tag}</a>
+                                })}
+                            </p>
+                        )
+                    }
+                })}
             </div>
 
             <form className={styles.commentForm}>
