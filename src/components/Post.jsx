@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { format, formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Avatar } from './Avatar';
@@ -5,6 +6,11 @@ import { Comment } from './Comment';
 import styles from './Post.module.css';
 
 export function Post({author, content, publishedAt}){
+    const [comments, setComments] = useState([
+        'Top demais!'
+    ]);
+
+    const [newComment, setNewComment] = useState('');
 
     const publishedDateFormatted = format(publishedAt, "d 'de' LLLL 'às' HH'h'mm", {
         locale: ptBR,
@@ -14,6 +20,17 @@ export function Post({author, content, publishedAt}){
         locale: ptBR,
         addSuffix: true,
     })
+
+    function handleCreateNewComment(event){
+        event.preventDefault();
+
+        setComments([...comments, newComment]);
+        setNewComment('');
+    }
+
+    function handleNewCommentChange(event){
+        setNewComment(event.target.value);
+    }
 
 
     return (
@@ -32,14 +49,14 @@ export function Post({author, content, publishedAt}){
             <div className={styles.content}>
                 {content.map(item=>{
                     if(item.type === 'paragraph'){
-                        return <p>{item.content}</p>
+                        return <p key={item.content}>{item.content}</p>
                     }else if(item.type === 'link'){
-                        return <p><a href="">{item.content}</a></p>
+                        return <p key={item.content}><a href="">{item.content}</a></p>
                     }else if(item.type === 'tag'){
                         return (
-                            <p>
+                            <p key={item.content}>
                                 {item.content.map(tag=>{
-                                    return <a href="" className={styles.tag}>{tag}</a>
+                                    return <a key={tag} href="" className={styles.tag}>{tag}</a>
                                 })}
                             </p>
                         )
@@ -47,10 +64,13 @@ export function Post({author, content, publishedAt}){
                 })}
             </div>
 
-            <form className={styles.commentForm}>
+            <form onSubmit={handleCreateNewComment} className={styles.commentForm}>
                 <strong>Deixe seu feedback</strong>
                 <textarea 
+                    name='comment'
+                    value={newComment}
                     placeholder='Escreva seu comentário'
+                    onChange={handleNewCommentChange}
                 />
                 <footer>
                     <button type="submit">Publicar</button>
@@ -58,9 +78,14 @@ export function Post({author, content, publishedAt}){
             </form>
 
             <div className={styles.commentList}>
-                <Comment />
-                <Comment />
-                <Comment />
+                {comments.map(item=>{
+                    return (
+                        <Comment 
+                            key={item}
+                            content={item}
+                        />
+                    )
+                })}
             </div>
 
         </article>
