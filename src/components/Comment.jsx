@@ -12,7 +12,10 @@ export function Comment({content, onDeleteComment}){
     }
 
     function handleLikeComment(){
-        setLikeCounter(likeCounter + 1);
+        // Quando o valor da atualização do estado depende dele mesmo, recomenda-se fazer uma atualização funcional
+        setLikeCounter((state)=>{
+            return state + 1;
+        });
     }
 
     return (
