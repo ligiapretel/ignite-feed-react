@@ -1,6 +1,6 @@
 # :iphone: Ignite Feed
 
-<img alt="ignitefeed" src="./assets/print-ignite-feed.png" width="100%">
+<img alt="ignitefeed" src="./src/assets/print-ignite-feed.png" width="100%">
 
 ## :link: Link do projeto publicado
 <a href="https://ignite-feed-react-five.vercel.app/" target="_blank">Clique aqui para visualizar</a>
